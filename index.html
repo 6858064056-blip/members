@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thai Consonant Quiz</title>
+<title>Thai Consonant Karaoke Quiz</title>
 
 <style>
   body {
@@ -25,7 +25,7 @@
     margin: 10px auto;
     padding: 10px 20px;
     font-size: 18px;
-    width: 200px;
+    width: 220px;
     cursor: pointer;
   }
 
@@ -51,7 +51,7 @@
 
 <body>
 
-<h1>Thai Consonant Quiz</h1>
+<h1>Thai Consonant Karaoke Quiz</h1>
 
 <div class="letter" id="letter">ก</div>
 
@@ -67,24 +67,24 @@
 
 <script>
 const consonants = [
-  { letter: "ก", name: "ไก่" },
-  { letter: "ข", name: "ไข่" },
-  { letter: "ค", name: "ควาย" },
-  { letter: "ง", name: "งู" },
-  { letter: "จ", name: "จาน" },
-  { letter: "ช", name: "ช้าง" },
-  { letter: "ด", name: "เด็ก" },
-  { letter: "ต", name: "เต่า" },
-  { letter: "บ", name: "ใบไม้" },
-  { letter: "ป", name: "ปลา" },
-  { letter: "ม", name: "ม้า" },
-  { letter: "ย", name: "ยักษ์" },
-  { letter: "ร", name: "เรือ" },
-  { letter: "ล", name: "ลิง" },
-  { letter: "ว", name: "แหวน" },
-  { letter: "ส", name: "เสือ" },
-  { letter: "ห", name: "หีบ" },
-  { letter: "อ", name: "อ่าง" }
+  { letter: "ก", karaoke: "gai" },
+  { letter: "ข", karaoke: "kai" },
+  { letter: "ค", karaoke: "kwai" },
+  { letter: "ง", karaoke: "ngoo" },
+  { letter: "จ", karaoke: "jaan" },
+  { letter: "ช", karaoke: "chang" },
+  { letter: "ด", karaoke: "dek" },
+  { letter: "ต", karaoke: "tao" },
+  { letter: "บ", karaoke: "bai mai" },
+  { letter: "ป", karaoke: "pla" },
+  { letter: "ม", karaoke: "maa" },
+  { letter: "ย", karaoke: "yak" },
+  { letter: "ร", karaoke: "ruea" },
+  { letter: "ล", karaoke: "ling" },
+  { letter: "ว", karaoke: "waen" },
+  { letter: "ส", karaoke: "suea" },
+  { letter: "ห", karaoke: "heeb" },
+  { letter: "อ", karaoke: "aang" }
 ];
 
 let current;
@@ -94,15 +94,13 @@ let lives = 3;
 function newQuestion() {
   if (lives <= 0) return;
 
-  const randomIndex = Math.floor(Math.random() * consonants.length);
-  current = consonants[randomIndex];
-
+  current = consonants[Math.floor(Math.random() * consonants.length)];
   document.getElementById("letter").textContent = current.letter;
 
-  let options = [current.name];
+  let options = [current.karaoke];
 
   while (options.length < 3) {
-    const randomOption = consonants[Math.floor(Math.random() * consonants.length)].name;
+    const randomOption = consonants[Math.floor(Math.random() * consonants.length)].karaoke;
     if (!options.includes(randomOption)) {
       options.push(randomOption);
     }
@@ -124,7 +122,7 @@ function newQuestion() {
 function checkAnswer(selected) {
   if (lives <= 0) return;
 
-  if (selected === current.name) {
+  if (selected === current.karaoke) {
     score++;
   } else {
     lives--;
