@@ -1,176 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Your website description here" />
-  <title>My Website</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thai Consonant Quiz</title>
 
-  <!-- Google Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f2f4f8;
+    padding: 40px;
+  }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  h1 { margin-bottom: 20px; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      background-color: #f9fafb;
-      color: #333;
-    }
+  .letter {
+    font-size: 120px;
+    margin: 20px 0;
+  }
 
-    header {
-      background: #111827;
-      color: #fff;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .choices button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 18px;
+    width: 200px;
+    cursor: pointer;
+  }
 
-    header h1 {
-      font-size: 1.5rem;
-    }
+  .status {
+    margin-top: 20px;
+    font-size: 18px;
+  }
 
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      margin-left: 1.5rem;
-      font-weight: 500;
-    }
+  .gameover {
+    font-size: 24px;
+    color: red;
+    margin-top: 20px;
+  }
 
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .hero {
-      padding: 4rem 2rem;
-      text-align: center;
-      background: linear-gradient(to right, #4f46e5, #3b82f6);
-      color: white;
-    }
-
-    .hero h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background: #fff;
-      color: #4f46e5;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 3rem auto;
-      padding: 0 2rem;
-    }
-
-    .section {
-      margin-bottom: 3rem;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .card {
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    footer {
-      background: #111827;
-      color: #fff;
-      text-align: center;
-      padding: 1.5rem;
-      margin-top: 3rem;
-    }
-
-    @media (max-width: 600px) {
-      .hero h2 {
-        font-size: 2rem;
-      }
-    }
-  </style>
+  .restart {
+    margin-top: 15px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
 </head>
+
 <body>
 
-  <header>
-    <h1>My Website</h1>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
+<h1>Thai Consonant Quiz</h1>
 
-  <section class="hero">
-    <h2>Welcome to My Website</h2>
-    <p>Build something amazing. Start your journey today.</p>
-    <a href="#about" class="btn">Learn More</a>
-  </section>
+<div class="letter" id="letter">ก</div>
 
-  <div class="container">
-    <section id="about" class="section">
-      <h2>About Us</h2>
-      <p>
-        This is a simple, responsive HTML template you can customize
-        for your own website or project.
-      </p>
-    </section>
+<div class="choices" id="choices"></div>
 
-    <section id="services" class="section">
-      <h2>Our Services</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Service One</h3>
-          <p>Description of your first service.</p>
-        </div>
-        <div class="card">
-          <h3>Service Two</h3>
-          <p>Description of your second service.</p>
-        </div>
-        <div class="card">
-          <h3>Service Three</h3>
-          <p>Description of your third service.</p>
-        </div>
-      </div>
-    </section>
+<div class="status">
+  Score: <span id="score">0</span> |
+  Lives: <span id="lives">3</span> ❤️
+</div>
 
-    <section id="contact" class="section">
-      <h2>Contact</h2>
-      <p>Email: your@email.com</p>
-    </section>
-  </div>
+<div class="gameover" id="gameover"></div>
+<button class="restart" onclick="restartGame()" style="display:none;" id="restartBtn">Restart</button>
 
-  <footer>
-    <p>&copy; 2026 My Website. All rights reserved.</p>
-  </footer>
+<script>
+const consonants = [
+  { letter: "ก", name: "ไก่" },
+  { letter: "ข", name: "ไข่" },
+  { letter: "ค", name: "ควาย" },
+  { letter: "ง", name: "งู" },
+  { letter: "จ", name: "จาน" },
+  { letter: "ช", name: "ช้าง" },
+  { letter: "ด", name: "เด็ก" },
+  { letter: "ต", name: "เต่า" },
+  { letter: "บ", name: "ใบไม้" },
+  { letter: "ป", name: "ปลา" },
+  { letter: "ม", name: "ม้า" },
+  { letter: "ย", name: "ยักษ์" },
+  { letter: "ร", name: "เรือ" },
+  { letter: "ล", name: "ลิง" },
+  { letter: "ว", name: "แหวน" },
+  { letter: "ส", name: "เสือ" },
+  { letter: "ห", name: "หีบ" },
+  { letter: "อ", name: "อ่าง" }
+];
+
+let current;
+let score = 0;
+let lives = 3;
+
+function newQuestion() {
+  if (lives <= 0) return;
+
+  const randomIndex = Math.floor(Math.random() * consonants.length);
+  current = consonants[randomIndex];
+
+  document.getElementById("letter").textContent = current.letter;
+
+  let options = [current.name];
+
+  while (options.length < 3) {
+    const randomOption = consonants[Math.floor(Math.random() * consonants.length)].name;
+    if (!options.includes(randomOption)) {
+      options.push(randomOption);
+    }
+  }
+
+  options.sort(() => Math.random() - 0.5);
+
+  const choicesDiv = document.getElementById("choices");
+  choicesDiv.innerHTML = "";
+
+  options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.textContent = option;
+    btn.onclick = () => checkAnswer(option);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected) {
+  if (lives <= 0) return;
+
+  if (selected === current.name) {
+    score++;
+  } else {
+    lives--;
+  }
+
+  document.getElementById("score").textContent = score;
+  document.getElementById("lives").textContent = lives;
+
+  if (lives <= 0) {
+    endGame();
+  } else {
+    newQuestion();
+  }
+}
+
+function endGame() {
+  document.getElementById("gameover").textContent = "Game Over!";
+  document.getElementById("choices").innerHTML = "";
+  document.getElementById("restartBtn").style.display = "inline-block";
+}
+
+function restartGame() {
+  score = 0;
+  lives = 3;
+  document.getElementById("score").textContent = score;
+  document.getElementById("lives").textContent = lives;
+  document.getElementById("gameover").textContent = "";
+  document.getElementById("restartBtn").style.display = "none";
+  newQuestion();
+}
+
+newQuestion();
+</script>
 
 </body>
 </html>
