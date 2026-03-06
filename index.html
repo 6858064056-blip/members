@@ -59,7 +59,8 @@
 
 <div class="status">
   Score: <span id="score">0</span> |
-  Lives: <span id="lives">3</span> ❤️
+  Lives: <span id="lives">3</span> ❤️ |
+  Remaining: <span id="remaining">18</span>
 </div>
 
 <div class="gameover" id="gameover"></div>
@@ -90,20 +91,33 @@ const consonants = [
 let current;
 let score = 0;
 let lives = 3;
+let remaining = [...consonants];
+
+function updateStatus() {
+  document.getElementById("score").textContent = score;
+  document.getElementById("lives").textContent = lives;
+  document.getElementById("remaining").textContent = remaining.length;
+}
 
 function newQuestion() {
   if (lives <= 0) return;
 
-  current = consonants[Math.floor(Math.random() * consonants.length)];
+  if (remaining.length === 0) {
+    endGame(true);
+    return;
+  }
+
+  current = remaining[Math.floor(Math.random() * remaining.length)];
   document.getElementById("letter").textContent = current.letter;
 
-  let options = [current.karaoke];
+  const options = [current.karaoke];
+  const pool = remaining
+    .filter(c => c.letter !== current.letter)
+    .map(c => c.karaoke);
 
-  while (options.length < 3) {
-    const randomOption = consonants[Math.floor(Math.random() * consonants.length)].karaoke;
-    if (!options.includes(randomOption)) {
-      options.push(randomOption);
-    }
+  while (options.length < 3 && pool.length > 0) {
+    const idx = Math.floor(Math.random() * pool.length);
+    options.push(pool.splice(idx, 1)[0]);
   }
 
   options.sort(() => Math.random() - 0.5);
@@ -117,6 +131,8 @@ function newQuestion() {
     btn.onclick = () => checkAnswer(option);
     choicesDiv.appendChild(btn);
   });
+
+  updateStatus();
 }
 
 function checkAnswer(selected) {
@@ -124,22 +140,24 @@ function checkAnswer(selected) {
 
   if (selected === current.karaoke) {
     score++;
+    remaining = remaining.filter(c => c.letter !== current.letter);
   } else {
     lives--;
   }
 
-  document.getElementById("score").textContent = score;
-  document.getElementById("lives").textContent = lives;
+  updateStatus();
 
   if (lives <= 0) {
-    endGame();
+    endGame(false);
   } else {
     newQuestion();
   }
 }
 
-function endGame() {
-  document.getElementById("gameover").textContent = "Game Over!";
+function endGame(allKnown) {
+  document.getElementById("gameover").textContent = allKnown
+    ? "All cards known! Great job!"
+    : "Game Over!";
   document.getElementById("choices").innerHTML = "";
   document.getElementById("restartBtn").style.display = "inline-block";
 }
@@ -147,10 +165,10 @@ function endGame() {
 function restartGame() {
   score = 0;
   lives = 3;
-  document.getElementById("score").textContent = score;
-  document.getElementById("lives").textContent = lives;
+  remaining = [...consonants];
   document.getElementById("gameover").textContent = "";
   document.getElementById("restartBtn").style.display = "none";
+  updateStatus();
   newQuestion();
 }
 
