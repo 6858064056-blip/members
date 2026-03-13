@@ -3,176 +3,275 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thai Consonant Karaoke Quiz</title>
+
+<title>Thai Consonant Quiz</title>
 
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f2f4f8;
-    padding: 40px;
-  }
 
-  h1 { margin-bottom: 20px; }
+body{
+font-family: Arial;
+text-align:center;
+background:#f2f4f8;
+padding:40px;
+}
 
-  .letter {
-    font-size: 120px;
-    margin: 20px 0;
-  }
+h1{
+margin-bottom:10px;
+}
 
-  .choices button {
-    display: block;
-    margin: 10px auto;
-    padding: 10px 20px;
-    font-size: 18px;
-    width: 220px;
-    cursor: pointer;
-  }
+.letter{
+font-size:120px;
+margin:20px 0;
+}
 
-  .status {
-    margin-top: 20px;
-    font-size: 18px;
-  }
+.choices button{
+display:block;
+margin:10px auto;
+padding:10px 20px;
+font-size:18px;
+width:240px;
+cursor:pointer;
+}
 
-  .gameover {
-    font-size: 24px;
-    color: red;
-    margin-top: 20px;
-  }
+.status{
+margin-top:20px;
+font-size:20px;
+}
 
-  .restart {
-    margin-top: 15px;
-    padding: 8px 16px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+.gameover{
+font-size:28px;
+color:red;
+margin-top:20px;
+}
+
+.restart{
+margin-top:20px;
+padding:10px 20px;
+font-size:18px;
+cursor:pointer;
+}
+
+input{
+padding:10px;
+font-size:18px;
+width:250px;
+}
+
+.startBtn{
+padding:12px 30px;
+font-size:18px;
+margin-top:15px;
+cursor:pointer;
+}
+
 </style>
 </head>
 
 <body>
 
-<h1>Thai Consonant Karaoke Quiz</h1>
+<!-- WELCOME PAGE -->
+
+<div id="welcomeScreen">
+
+<h1>CSII Team X</h1>
+<h2>Ironmind888</h2>
+<h3>Thai Consonants</h3>
+
+<input type="text" id="playerInput" placeholder="Enter your name">
+
+<br>
+
+<button class="startBtn" onclick="startGame()">Start Quiz</button>
+
+</div>
+
+
+<!-- GAME PAGE -->
+
+<div id="gameScreen" style="display:none">
+
+<h2 id="playerName"></h2>
+
+<div class="status">
+<span id="hearts">❤️❤️❤️</span><br>
+Remaining: <span id="remaining">18</span>
+</div>
+
+<h1>Thai Consonant Drill</h1>
 
 <div class="letter" id="letter">ก</div>
 
 <div class="choices" id="choices"></div>
 
-<div class="status">
-  Score: <span id="score">0</span> |
-  Lives: <span id="lives">3</span> ❤️ |
-  Remaining: <span id="remaining">18</span>
+<div class="gameover" id="gameover"></div>
+
+<button class="restart" id="restartBtn" onclick="restartGame()" style="display:none">Restart</button>
+
 </div>
 
-<div class="gameover" id="gameover"></div>
-<button class="restart" onclick="restartGame()" style="display:none;" id="restartBtn">Restart</button>
 
 <script>
-const consonants = [
-  { letter: "ก", karaoke: "gai" },
-  { letter: "ข", karaoke: "kai" },
-  { letter: "ค", karaoke: "kwai" },
-  { letter: "ง", karaoke: "ngoo" },
-  { letter: "จ", karaoke: "jaan" },
-  { letter: "ช", karaoke: "chang" },
-  { letter: "ด", karaoke: "dek" },
-  { letter: "ต", karaoke: "tao" },
-  { letter: "บ", karaoke: "bai mai" },
-  { letter: "ป", karaoke: "pla" },
-  { letter: "ม", karaoke: "maa" },
-  { letter: "ย", karaoke: "yak" },
-  { letter: "ร", karaoke: "ruea" },
-  { letter: "ล", karaoke: "ling" },
-  { letter: "ว", karaoke: "waen" },
-  { letter: "ส", karaoke: "suea" },
-  { letter: "ห", karaoke: "heeb" },
-  { letter: "อ", karaoke: "aang" }
-];
 
-let current;
-let score = 0;
-let lives = 3;
-let remaining = [...consonants];
+let playerName=""
+let hearts=3
 
-function updateStatus() {
-  document.getElementById("score").textContent = score;
-  document.getElementById("lives").textContent = lives;
-  document.getElementById("remaining").textContent = remaining.length;
+const consonants=[
+{letter:"ก",karaoke:"gai"},
+{letter:"ข",karaoke:"kai"},
+{letter:"ค",karaoke:"kwai"},
+{letter:"ง",karaoke:"ngoo"},
+{letter:"จ",karaoke:"jaan"},
+{letter:"ช",karaoke:"chang"},
+{letter:"ด",karaoke:"dek"},
+{letter:"ต",karaoke:"tao"},
+{letter:"บ",karaoke:"bai mai"},
+{letter:"ป",karaoke:"pla"},
+{letter:"ม",karaoke:"maa"},
+{letter:"ย",karaoke:"yak"},
+{letter:"ร",karaoke:"ruea"},
+{letter:"ล",karaoke:"ling"},
+{letter:"ว",karaoke:"waen"},
+{letter:"ส",karaoke:"suea"},
+{letter:"ห",karaoke:"heeb"},
+{letter:"อ",karaoke:"aang"}
+]
+
+let remaining=[...consonants]
+let current
+
+
+function startGame(){
+
+playerName=document.getElementById("playerInput").value.trim()
+
+if(playerName===""){
+alert("Please enter your name")
+return
 }
 
-function newQuestion() {
-  if (lives <= 0) return;
+document.getElementById("playerName").textContent=playerName
 
-  if (remaining.length === 0) {
-    endGame(true);
-    return;
-  }
+document.getElementById("welcomeScreen").style.display="none"
+document.getElementById("gameScreen").style.display="block"
 
-  current = remaining[Math.floor(Math.random() * remaining.length)];
-  document.getElementById("letter").textContent = current.letter;
+updateStatus()
+newQuestion()
 
-  const options = [current.karaoke];
-  const pool = remaining
-    .filter(c => c.letter !== current.letter)
-    .map(c => c.karaoke);
-
-  while (options.length < 3 && pool.length > 0) {
-    const idx = Math.floor(Math.random() * pool.length);
-    options.push(pool.splice(idx, 1)[0]);
-  }
-
-  options.sort(() => Math.random() - 0.5);
-
-  const choicesDiv = document.getElementById("choices");
-  choicesDiv.innerHTML = "";
-
-  options.forEach(option => {
-    const btn = document.createElement("button");
-    btn.textContent = option;
-    btn.onclick = () => checkAnswer(option);
-    choicesDiv.appendChild(btn);
-  });
-
-  updateStatus();
 }
 
-function checkAnswer(selected) {
-  if (lives <= 0) return;
 
-  if (selected === current.karaoke) {
-    score++;
-    remaining = remaining.filter(c => c.letter !== current.letter);
-  } else {
-    lives--;
-  }
+function updateStatus(){
 
-  updateStatus();
+document.getElementById("remaining").textContent=remaining.length
+document.getElementById("hearts").textContent="❤️".repeat(hearts)
 
-  if (lives <= 0) {
-    endGame(false);
-  } else {
-    newQuestion();
-  }
 }
 
-function endGame(allKnown) {
-  document.getElementById("gameover").textContent = allKnown
-    ? "All cards known! Great job!"
-    : "Game Over!";
-  document.getElementById("choices").innerHTML = "";
-  document.getElementById("restartBtn").style.display = "inline-block";
+
+function newQuestion(){
+
+if(hearts<=0)return
+
+if(remaining.length===0){
+endGame(true)
+return
 }
 
-function restartGame() {
-  score = 0;
-  lives = 3;
-  remaining = [...consonants];
-  document.getElementById("gameover").textContent = "";
-  document.getElementById("restartBtn").style.display = "none";
-  updateStatus();
-  newQuestion();
+current=remaining[Math.floor(Math.random()*remaining.length)]
+
+document.getElementById("letter").textContent=current.letter
+
+const options=[current.karaoke]
+
+const pool=consonants
+.filter(c=>c.letter!==current.letter)
+.map(c=>c.karaoke)
+
+while(options.length<3){
+const idx=Math.floor(Math.random()*pool.length)
+options.push(pool.splice(idx,1)[0])
 }
 
-newQuestion();
+options.sort(()=>Math.random()-0.5)
+
+const choicesDiv=document.getElementById("choices")
+
+choicesDiv.innerHTML=""
+
+options.forEach(option=>{
+
+const btn=document.createElement("button")
+
+btn.textContent=option
+
+btn.onclick=()=>checkAnswer(option)
+
+choicesDiv.appendChild(btn)
+
+})
+
+updateStatus()
+
+}
+
+
+function checkAnswer(selected){
+
+if(hearts<=0)return
+
+if(selected===current.karaoke){
+
+remaining=remaining.filter(c=>c.letter!==current.letter)
+
+}else{
+
+hearts--
+
+}
+
+updateStatus()
+
+if(hearts<=0){
+
+endGame(false)
+
+}else{
+
+newQuestion()
+
+}
+
+}
+
+
+function endGame(allKnown){
+
+document.getElementById("choices").innerHTML=""
+
+document.getElementById("restartBtn").style.display="inline-block"
+
+document.getElementById("gameover").textContent=
+allKnown?"All cards known! Great job!":"Game Over!"
+
+}
+
+
+function restartGame(){
+
+hearts=3
+
+remaining=[...consonants]
+
+document.getElementById("gameover").textContent=""
+
+document.getElementById("restartBtn").style.display="none"
+
+updateStatus()
+
+newQuestion()
+
+}
+
 </script>
 
 </body>
